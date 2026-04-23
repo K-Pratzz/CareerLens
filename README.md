@@ -96,8 +96,7 @@ This project demonstrates:
 ---
 
 ## 👤 Author
-
-Your Name
+Kumari Pratibha
 
 ---
 
