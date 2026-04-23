@@ -17,9 +17,8 @@ function JobCard({ job, onSave, isSaved }) {
         Apply
       </a>
 
-      {/* 💾 SAVE BUTTON */}
       <button onClick={() => onSave(job)}>
-        {isSaved ? "❌ Remove" : "💾 Save"}
+        {isSaved ? "Remove" : "Save"}
       </button>
     </div>
   );

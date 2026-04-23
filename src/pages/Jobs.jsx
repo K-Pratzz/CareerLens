@@ -1,104 +1,68 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { fetchJobs } from "../services/jobApi";
 import JobCard from "../components/JobCard";
-import { debounce } from "../utils/debounce";
 
 function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [displayJobs, setDisplayJobs] = useState([]);
 
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("default");
   const [location, setLocation] = useState("");
+  const [sort, setSort] = useState("default");
 
   const [savedJobs, setSavedJobs] = useState(
     JSON.parse(localStorage.getItem("savedJobs")) || []
   );
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const [visibleCount, setVisibleCount] = useState(6);
-
-  // 🔥 Fetch jobs
   useEffect(() => {
-    const getJobs = async () => {
-      setLoading(true);
+    const load = async () => {
       try {
         const data = await fetchJobs();
         setJobs(data);
         setDisplayJobs(data);
       } catch {
-        setError("Failed to fetch jobs");
+        alert("Error fetching jobs");
       }
       setLoading(false);
     };
 
-    getJobs();
+    load();
   }, []);
 
-  // 🔥 MAIN LOGIC: search + filter + sort together
-  const applyLogic = useCallback(
-    debounce((searchValue, locationValue, sortValue) => {
-      let result = [...jobs];
-
-      // 🔍 SEARCH
-      if (searchValue) {
-        result = result.filter((job) =>
-          job.title.toLowerCase().includes(searchValue.toLowerCase())
-        );
-      }
-
-      // 📍 FILTER (location)
-      if (locationValue) {
-        result = result.filter((job) =>
-          job.candidate_required_location
-            .toLowerCase()
-            .includes(locationValue.toLowerCase())
-        );
-      }
-
-      // 🔄 SORT
-      if (sortValue === "az") {
-        result.sort((a, b) => a.title.localeCompare(b.title));
-      } else if (sortValue === "za") {
-        result.sort((a, b) => b.title.localeCompare(a.title));
-      }
-
-      setDisplayJobs(result);
-      setVisibleCount(6);
-    }, 400),
-    [jobs]
-  );
-
-  // 🔥 Trigger logic when inputs change
+  // 🔍 SEARCH + FILTER + SORT
   useEffect(() => {
-    applyLogic(search, location, sort);
-  }, [search, location, sort, applyLogic]);
+    let result = [...jobs];
 
-  // 🔥 Infinite scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      const bottom =
-        window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - 50;
+    if (search) {
+      result = result.filter((j) =>
+        j.title.toLowerCase().includes(search.toLowerCase())
+      );
+    }
 
-      if (bottom) {
-        setVisibleCount((prev) => prev + 6);
-      }
-    };
+    if (location) {
+      result = result.filter((j) =>
+        j.candidate_required_location
+          .toLowerCase()
+          .includes(location.toLowerCase())
+      );
+    }
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    if (sort === "az") {
+      result.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sort === "za") {
+      result.sort((a, b) => b.title.localeCompare(a.title));
+    }
+
+    setDisplayJobs(result);
+  }, [search, location, sort, jobs]);
 
   // 💾 SAVE JOB
   const toggleSave = (job) => {
     let updated;
 
-    const exists = savedJobs.find((j) => j.id === job.id);
-
-    if (exists) {
+    if (savedJobs.find((j) => j.id === job.id)) {
       updated = savedJobs.filter((j) => j.id !== job.id);
     } else {
       updated = [...savedJobs, job];
@@ -112,42 +76,36 @@ function Jobs() {
     <div className="page">
       <h1>Jobs</h1>
 
-      {/* 🔍 SEARCH */}
       <input
-        type="text"
-        placeholder="Search job..."
-        value={search}
+        placeholder="Search job"
         onChange={(e) => setSearch(e.target.value)}
       />
 
-      {/* 📍 FILTER */}
       <input
-        type="text"
-        placeholder="Filter by location"
-        value={location}
+        placeholder="Filter location"
         onChange={(e) => setLocation(e.target.value)}
       />
 
-      {/* 🔄 SORT */}
       <select onChange={(e) => setSort(e.target.value)}>
         <option value="default">Sort</option>
         <option value="az">A-Z</option>
         <option value="za">Z-A</option>
       </select>
 
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <div className="grid">
-        {displayJobs.slice(0, visibleCount).map((job) => (
-          <JobCard
-            key={job.id}
-            job={job}
-            onSave={toggleSave}
-            isSaved={savedJobs.some((j) => j.id === job.id)}
-          />
-        ))}
-      </div>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="grid">
+          {displayJobs.map((job) => (
+            <JobCard
+              key={job.id}
+              job={job}
+              onSave={toggleSave}
+              isSaved={savedJobs.some((j) => j.id === job.id)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import JobCard from "../components/JobCard";
 
 function Saved() {
-  const [savedJobs, setSavedJobs] = useState([]);
+  const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("savedJobs")) || [];
-    setSavedJobs(data);
+    setJobs(data);
   }, []);
 
-  const removeJob = (job) => {
-    const updated = savedJobs.filter((j) => j.id !== job.id);
-    setSavedJobs(updated);
+  const remove = (job) => {
+    const updated = jobs.filter((j) => j.id !== job.id);
+    setJobs(updated);
     localStorage.setItem("savedJobs", JSON.stringify(updated));
   };
 
@@ -19,15 +19,15 @@ function Saved() {
     <div className="page">
       <h1>Saved Jobs</h1>
 
-      {savedJobs.length === 0 ? (
+      {jobs.length === 0 ? (
         <p>No saved jobs</p>
       ) : (
         <div className="grid">
-          {savedJobs.map((job) => (
+          {jobs.map((job) => (
             <JobCard
               key={job.id}
               job={job}
-              onSave={removeJob}
+              onSave={remove}
               isSaved={true}
             />
           ))}
