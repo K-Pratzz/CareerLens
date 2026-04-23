@@ -1,18 +1,23 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
 function Navbar() {
+  const [dark, setDark] = useState(
+    JSON.parse(localStorage.getItem("theme")) || true
+  );
+
+  useEffect(() => {
+    document.body.className = dark ? "dark" : "light";
+    localStorage.setItem("theme", JSON.stringify(dark));
+  }, [dark]);
+
   return (
-    <nav className="navbar">
+    <div style={{ display: "flex", justifyContent: "space-between", padding: "10px" }}>
       <h2>CareerLens</h2>
 
-      <div>
-        {/* Link prevents full page reload (SPA behavior) */}
-        <Link to="/">Home</Link>
-        <Link to="/jobs">Jobs</Link>
-        <Link to="/saved">Saved</Link>
-      </div>
-    </nav>
+      <button onClick={() => setDark(!dark)}>
+        {dark ? "☀️ Light" : "🌙 Dark"}
+      </button>
+    </div>
   );
 }
 
