@@ -1,29 +1,46 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 
-function Navbar() {
-  const [dark, setDark] = useState(
-    JSON.parse(localStorage.getItem("theme")) ?? true
-  );
+const Navbar = () => {
+  const location = useLocation()
+  const [theme, setTheme] = useState('dark')
 
   useEffect(() => {
-    document.body.classList.toggle("light", !dark);
-    localStorage.setItem("theme", JSON.stringify(dark));
-  }, [dark]);
+    const savedTheme = localStorage.getItem('theme') || 'dark'
+    setTheme(savedTheme)
+    document.documentElement.setAttribute('data-theme', savedTheme)
+  }, [])
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark'
+    setTheme(newTheme)
+    localStorage.setItem('theme', newTheme)
+    document.documentElement.setAttribute('data-theme', newTheme)
+  }
 
   return (
-    <div className="navbar">
-      <h2>CareerLens</h2>
+    <nav className="navbar">
+      <Link to="/" className="logo">CareerLens</Link>
 
-      <div>
-        <Link to="/">Jobs</Link>
-        <Link to="/saved">Saved</Link>
-        <button onClick={() => setDark(!dark)}>
-          {dark ? "Light" : "Dark"}
+      <div className="nav-links">
+        <Link 
+          to="/jobs" 
+          className={`nav-link ${location.pathname === '/jobs' ? 'active' : ''}`}
+        >
+          Jobs
+        </Link>
+        <Link 
+          to="/saved" 
+          className={`nav-link ${location.pathname === '/saved' ? 'active' : ''}`}
+        >
+          Saved
+        </Link>
+        <button onClick={toggleTheme} className="theme-toggle">
+          {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
         </button>
       </div>
-    </div>
-  );
+    </nav>
+  )
 }
 
-export default Navbar;
+export default Navbar

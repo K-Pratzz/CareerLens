@@ -1,140 +1,266 @@
-/* RESET + FONT */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
 }
 
-/* DARK MODE (DEFAULT) */
+/* Default Dark Theme */
 body {
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: #f1f5f9;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #0a0a1f 0%, #1a1a2e 100%);
+  color: #e0e0ff;
   min-height: 100vh;
+  transition: background 0.4s ease;
 }
 
-/* PAGE */
-.page {
-  padding: 20px;
+/* Light Theme */
+[data-theme="light"] body {
+  background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+  color: #1a1a2e;
 }
 
-/* NAVBAR */
+/* Navbar */
 .navbar {
+  background: rgba(15, 15, 40, 0.95);
+  backdrop-filter: blur(12px);
+  padding: 1.2rem 6%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  background: #1e293b;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-.navbar a {
-  margin-left: 15px;
+[data-theme="light"] .navbar {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.logo {
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: #66ccff;
   text-decoration: none;
-  color: #f1f5f9;
 }
 
-/* TITLE */
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-  font-weight: 600;
+[data-theme="light"] .logo {
+  color: #1e40af;
 }
 
-/* INPUTS */
-input, select {
-  padding: 10px;
-  margin: 10px;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-  background: #1e293b;
-  color: white;
-  width: 200px;
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
 }
 
-/* GRID */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-/* CARD */
-.card {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 15px;
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
+.nav-link {
+  color: #ddd;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
   transition: 0.3s;
 }
 
-.card:hover {
-  transform: translateY(-5px);
+[data-theme="light"] .nav-link {
+  color: #374151;
 }
 
-/* TEXT */
-.card h3 {
-  font-size: 18px;
-  margin-bottom: 5px;
+.nav-link:hover,
+.nav-link.active {
+  background: rgba(102, 204, 255, 0.25);
+  color: #66ccff;
 }
 
-.card p {
-  font-size: 14px;
-  opacity: 0.8;
+[data-theme="light"] .nav-link:hover,
+[data-theme="light"] .nav-link.active {
+  background: rgba(59, 130, 246, 0.15);
+  color: #1e40af;
 }
 
-/* BUTTON */
-button {
-  margin-top: 10px;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 8px;
+.theme-toggle {
+  padding: 10px 18px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  color: white;
   cursor: pointer;
-  background: #38bdf8;
-  color: black;
-  font-weight: 500;
+  font-size: 1rem;
 }
 
-button:hover {
-  background: #0ea5e9;
+[data-theme="light"] .theme-toggle {
+  background: rgba(0,0,0,0.08);
+  color: #1a1a2e;
+  border-color: rgba(0,0,0,0.15);
 }
 
-/* LINKS */
-a {
-  display: block;
-  margin-top: 10px;
-  color: #38bdf8;
-  text-decoration: none;
+/* Filters */
+.filters {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+  z-index: 20;
 }
 
-/* RESPONSIVE */
-@media (max-width: 600px) {
-  input, select {
-    width: 100%;
-  }
+.filters input,
+.filters select {
+  padding: 14px 18px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  font-size: 1.05rem;
+  flex: 1;
+  min-width: 240px;
+  background: rgba(255,255,255,0.08);
+  color: #7e817c;
 }
 
-/* 🌙 LIGHT MODE (OVERRIDE – MUST BE LAST) */
-.light {
-  background: #f8fafc;
-  color: #0f172a;
-}
-
-.light .card {
+[data-theme="light"] .filters input,
+[data-theme="light"] .filters select {
   background: white;
+  color: #1a1a2e;
+  border-color: #d1d5db;
 }
 
-.light input, 
-.light select {
-  background: #e2e8f0;
-  color: black;
+/* Job Card */
+.job-card {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: all 0.3s ease;
 }
 
-.light .navbar {
-  background: #e2e8f0;
+[data-theme="light"] .job-card {
+  background: white;
+  border-color: #e5e7eb;
+  color: #1a1a2e;
 }
 
-.light a {
-  color: #0ea5e9;
+.job-title {
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: #a0d8ff;
+  margin-bottom: 10px;
+}
+
+[data-theme="light"] .job-title {
+  color: #1e40af;
+}
+
+.company-name {
+  font-size: 1.15rem;
+  color: #b0b0ff;
+  margin-bottom: 8px;
+}
+
+[data-theme="light"] .company-name {
+  color: #4b5563;
+}
+
+.location {
+  color: #88ffaa;
+  margin-bottom: 18px;
+  font-size: 1.05rem;
+}
+
+[data-theme="light"] .location {
+  color: #15803d;
+}
+
+.description {
+  flex: 1;
+  color: #c0c0ff;
+  margin-bottom: 20px;
+  line-height: 1.55;
+}
+
+[data-theme="light"] .description {
+  color: #374151;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.tag {
+  background: rgba(102, 204, 255, 0.15);
+  color: #88ccff;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 0.88rem;
+}
+
+[data-theme="light"] .tag {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.card-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: auto;
+}
+
+.apply-btn,
+.save-btn {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.apply-btn {
+  background: #4a90ff;
+  color: white;
+}
+
+.apply-btn:hover { background: #3578e6; }
+
+.save-btn {
+  background: #00d4aa;
+  color: #0a0a1f;
+}
+
+.save-btn.remove {
+  background: #ff4d4d;
+  color: white;
+}
+
+.save-btn:hover:not(.remove) {
+  background: #00b894;
+}
+
+/* Container */
+.container {
+  max-width: 1400px;
+  margin: 2.5rem auto;
+  padding: 0 6%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar { padding: 1rem 5%; }
+  .logo { font-size: 1.9rem; }
+  .nav-links { gap: 1rem; }
+  .filters { flex-direction: column; }
+  .jobs-grid { 
+    grid-template-columns: 1fr; 
+    gap: 20px;
+  }
 }
